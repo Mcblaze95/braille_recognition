@@ -1,30 +1,17 @@
-"""
-Reference
-- https://docs.streamlit.io/library/api-reference/layout
-- https://github.com/CodingMantras/yolov8-streamlit-detection-tracking/blob/master/app.py
-- https://huggingface.co/keremberke/yolov8m-valorant-detection/tree/main
-- https://docs.ultralytics.com/usage/python/
-"""
 import time
 import PIL
 
 import requests
 import tempfile
 from gtts import gTTS
-import IPython.display as ipd
+import time
+import base64
 
 import streamlit as st
 import torch
 from ultralyticsplus import YOLO, render_result
 
 from convert import convert_to_braille_unicode, parse_xywh_and_class
-
-url = "https://text-to-speech27.p.rapidapi.com/speech"
-# 6c2654af12mshf64793d76a8d37ep114358jsn5d920f2f8022
-headers = {
-    "X-RapidAPI-Key": "NO_ID",
-    "X-RapidAPI-Host": "text-to-speech27.p.rapidapi.com"
-}
 
 # Function to convert text to speech and save the audio file
 def convert_to_speech(text):
@@ -126,12 +113,12 @@ try:
 
     st.subheader("PLAY AUDIO:")
     # Provide a download link for the audio file
-    st.audio(open(audio_file_path, "rb").read(), format="audio/mp3")
+    audio_file = open(audio_file_path, "rb")
+    audio_bytes = audio_file.read()
+    audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
+    audio_url = f"data:audio/mp3;base64,{audio_base64}"
 
-    # Play the audio
-    ipd.Audio(audio_file_path, autoplay=True)
+    # Generate an HTML audio element with autoplay
+    st.write(f'<audio autoplay controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
 except Exception as ex:
     st.write("Please try again with images with types of JPG, JPEG, PNG ...")
-    
-
-
