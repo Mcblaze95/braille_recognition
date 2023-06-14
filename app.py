@@ -116,9 +116,13 @@ try:
     audio_file = open(audio_file_path, "rb")
     audio_bytes = audio_file.read()
     audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
-    audio_url = f"data:audio/mp3;base64,{audio_base64}"
 
-    # Generate an HTML audio element with autoplay
-    st.write(f'<audio autoplay controls><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
+    # Generate an iframe for the audio file with autoplay
+    st.write(
+        f"""
+        <iframe scrolling="no" srcdoc="<audio controls autoplay><source src='data:audio/mp3;base64,{base64.b64encode(open(audio_file_path, "rb").read()).decode("utf-8")}' type='audio/mp3'></audio>" allow="autoplay" ></iframe>
+        """,
+        unsafe_allow_html=True,
+    )
 except Exception as ex:
     st.write("Please try again with images with types of JPG, JPEG, PNG ...")
